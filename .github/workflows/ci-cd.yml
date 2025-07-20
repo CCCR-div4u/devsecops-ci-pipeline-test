@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IMAGE_NAME: spring-petclinic
+      IMAGE_NAME: devsecops-pipeline-test
       REGISTRY: docker.io
       IMAGE_TAG: ${{ github.sha }} 
 
