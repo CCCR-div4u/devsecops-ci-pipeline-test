@@ -36,7 +36,7 @@ jobs:
       with:
         project: 'devsecops-pipeline-test'
         path: '.'
-        format: 'HTML,JSON'
+        format: 'HTML'
 
     - name: Upload Dependency-Check Scan Report
       uses: actions/upload-artifact@v4
