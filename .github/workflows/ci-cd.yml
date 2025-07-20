@@ -63,7 +63,7 @@ jobs:
       with:
         image-ref: "${{ steps.build_image.outputs.image_full_name }}"
         format: 'json'
-        exit-code: '0'
+        exit-code: '1'
         ignore-unfixed: true
         vuln-type: 'os,library'
         severity: 'CRITICAL,HIGH'
