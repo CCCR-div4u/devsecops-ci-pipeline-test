@@ -1,0 +1,43 @@
+name: "CodeQL SAST Scan"
+
+on:
+  push:
+    branches: [ "main" ] # main 브랜치에 푸시될 때마다 실행
+  pull_request:
+    branches: [ "main" ] # main 브랜치로 Pull Request가 열릴 때마다 실행
+  schedule:
+    # 매주 일요일 새벽 1시 30분에 정기적으로 스캔
+    # cron 스케줄은 UTC 기준입니다. 한국 시간(KST) 새벽 1시 30분은 UTC로 전날 오후 4시 30분입니다. (KST = UTC+9)
+    # 예: KST 01:30 = UTC 16:30 (전날)
+    - cron: '30 16 * * SUN' # 또는 '30 1 * * 0' (UTC 01:30에 실행)
+                           # 정확한 시간을 위해 '30 16 * * 0' 또는 '30 16 * * SUN'을 사용하세요 (UTC 기준으로 일요일 16:30 = KST 월요일 01:30)
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write # CodeQL이 보안 경고를 GitHub에 작성할 수 있도록 권한 부여
+      actions: read          # GitHub Actions의 작업을 읽을 권한
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # CodeQL 초기화 및 분석할 언어 설정
+    # Spring Boot 앱은 Java로 작성되므로 'java'를 지정합니다.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: java
+
+    # 빌드 단계: CodeQL이 코드를 분석하려면 빌드가 필요합니다.
+    # Spring Boot 앱이 Maven으로 빌드되므로 `mvn clean install`을 사용합니다.
+    # 기존 워크플로우에서 `mvnw package -DskipTests`를 사용했으므로 동일하게 적용합니다.
+    - name: Perform Autobuild with Maven
+      run: ./mvnw package -DskipTests
+
+    # CodeQL 분석 실행
+    # 빌드된 코드를 바탕으로 보안 취약점을 분석합니다.
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
