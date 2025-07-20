@@ -45,7 +45,7 @@ jobs:
         name: owasp-dependency-check-report
         path: ${{ github.workspace }}/dependency-check-report/
 
-		# SCA 스캔 결과에 따라 빌드 실패 처리 (선택 사항)
+    # SCA 스캔 결과에 따라 빌드 실패 처리 (선택 사항)
     # - name: Fail CI if SCA vulnerabilities found
     #   if: steps.depcheck.outputs.exitCode != 0
     #   run: |
