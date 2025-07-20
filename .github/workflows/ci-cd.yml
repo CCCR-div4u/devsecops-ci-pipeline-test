@@ -28,6 +28,30 @@ jobs:
     - name: Build with Maven
       run: ./mvnw package -DskipTests
 
+    - name: Run OWASP Dependency-Check SCA Scan
+      uses: dependency-check/Dependency-Check_Action@main
+      id: depcheck
+      with:
+        project: 'devsecops-pipeline-test'
+        path: '.'
+        format: 'HTML,JSON'
+        # threshold: 'CRITICAL,HIGH'
+        # failBuildOnCVSS: '7'
+
+    - name: Upload Dependency-Check Scan Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: owasp-dependency-check-report
+        path: ${{ github.workspace }}/dependency-check-report/
+
+		# SCA 스캔 결과에 따라 빌드 실패 처리 (선택 사항)
+    # - name: Fail CI if SCA vulnerabilities found
+    #   if: steps.depcheck.outputs.exitCode != 0
+    #   run: |
+    #     echo "OWASP Dependency-Check found vulnerabilities. Failing pipeline."
+    #     exit 1    
+
     - name: Log in to Docker registry
       uses: docker/login-action@v3
       with:
