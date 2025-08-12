@@ -1,6 +1,7 @@
 name: Build
 
 on:
+  workflow_dispatch: # 수동 실행을 위해 추가
   push:
     branches:
       - main
